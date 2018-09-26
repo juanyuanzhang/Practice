@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,12 +45,13 @@ public class Main2Activity extends AppCompatActivity {
 
                 String json = response.body().string();
                 Log.d("okhttp",json);
-                parseJSON(json);  //解析json自訂方法
+                //parseJSON(json);  //解析json自訂方法
+                parseGson(json); //使用Ｇson方法解析ＪＳＯＮ
 
             }
         });
     }
-    private void parseJSON(String s){
+    private void parseJSON(String s){//自訂方法解析ＪＳＯＮ，使用JSON.org解析
         ArrayList<Transaction> trans = new ArrayList<>();
         try{
             JSONArray array = new JSONArray(s);
@@ -65,5 +69,12 @@ public class Main2Activity extends AppCompatActivity {
         }catch (JSONException e){
             e.printStackTrace();
         }
+
     }
+    private void parseGson(String s){ //第三方函式庫ＧＳＯＮ方法
+        Gson gson = new Gson();
+        ArrayList<Transaction> list = gson.fromJson(s,new TypeToken<ArrayList<Transaction>>(){}.getType());
+        Log.d("GSON",list.size()+"/"+list.get(0).getAmount());
+    }
+
 }
