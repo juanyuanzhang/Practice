@@ -9,12 +9,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
@@ -46,6 +52,20 @@ public class LoginActivity extends AppCompatActivity {
                 login(v);
             }
         });
+        Button btnsetValue = findViewById(R.id.btnsetValue);
+        btnsetValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setUserData();
+            }
+        });
+        Button btnUpdate = findViewById(R.id.btnUpdate);
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateChildren();
+            }
+        });
 
     }
     //登入事件處理
@@ -60,6 +80,8 @@ public class LoginActivity extends AppCompatActivity {
                 if(!task.isSuccessful()){ //利用task的isSuccessful()方法(布林值)判斷登入是否成功
                     Log.d("onComplete","登入失敗");
                     register(email,password); //自訂登入失敗呼叫註冊視窗方法
+                }else{
+                    Toast.makeText(LoginActivity.this,"登入成功",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -92,11 +114,27 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+    public void setUserData(){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference usersRef = db.getReference("users");
+        usersRef.child(userUID).child("phone").setValue("1122334455");
+        usersRef.child(userUID).child("nickname").setValue("yuayuan");
+    }
+
+    public void updateChildren(){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference usersRef = db.getReference("users");
+        Map<String,Object> data = new HashMap<>() ;
+        data.put("nickname","Juanjuan");
+        usersRef.child(userUID).updateChildren(data);
+
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(authStateListener);
+        auth.signOut();
     }
 
     @Override
