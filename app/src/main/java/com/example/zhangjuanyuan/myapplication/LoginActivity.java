@@ -1,6 +1,7 @@
 package com.example.zhangjuanyuan.myapplication;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 updateChildren();
+            }
+        });
+        Button btnNext = findViewById(R.id.btnNext);
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(LoginActivity.this,MainActivity.class);
+                startActivity(it);
             }
         });
 
@@ -134,13 +143,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         auth.addAuthStateListener(authStateListener);
-        auth.signOut();
+        //auth.signOut();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         auth.removeAuthStateListener(authStateListener);
-        auth.signOut(); //關閉App時登出
+        //auth.signOut(); //關閉App時登出
     }
 }
